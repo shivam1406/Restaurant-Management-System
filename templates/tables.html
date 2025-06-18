@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<section aria-label="Manage restaurant tables">
+    <h1>Tables Management</h1>
+    <div class="add-button">
+        <button type="button" onclick="showAddTableForm()">Add New Table</button>
+    </div>
+    <div style="overflow-y: auto; padding-right: 10px; flex: 1;">
+        <table role="grid" aria-describedby="tablesTableDesc" id="tablesTable">
+            <thead>
+                <tr>
+                    <th scope="col">Table Name</th>
+                    <th scope="col">Capacity</th>
+                    <th scope="col" style="width: 160px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in tables %}
+                <tr data-id="{{ t.id }}">
+                    <td>{{ t.name }}</td>
+                    <td>{{ t.capacity }}</td>
+                    <td style="display: flex;">
+                        <button onclick="showEditTableForm(parseInt('{{ t.id }}'))" aria-label="Edit {{ t.name }}"><span class="material-icons">edit</span></button>
+                        <button onclick="deleteTable(parseInt('{{ t.id }}'))" aria-label="Delete {{ t.name }}"><span class="material-icons">delete</span></button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div id="tableFormModal" class="modal" role="dialog" aria-modal="true" hidden>
+        <div role="document" class="itemsubdiv">
+            <h2 id="tableFormTitle">Add New Table</h2>
+            <form id="tableForm" onsubmit="return submitTableForm(event)">
+                <input type="hidden" id="tableId" name="tableId" value="" />
+                <label for="tableNameInput">Table Name</label>
+                <input type="text" id="tableNameInput" name="name" autocomplete="off" required />
+                <label for="tableCapacityInput">Capacity</label>
+                <input type="number" id="tableCapacityInput" name="capacity" min="1" required />
+                <div class="button-div">
+                    <button type="button" onclick="hideTableForm()">Cancel</button>
+                    <button type="submit">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

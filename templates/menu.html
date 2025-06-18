@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
+<section aria-label="Manage menu items">
+    <h1>Menu Management</h1>
+    <div class="add-button">
+        <button type="button" onclick="showAddMenuItemForm()">Add New Item</button>
+    </div>
+    <div style="overflow-y: auto; padding-right: 10px; flex: 1;">
+        <table role="grid" aria-describedby="menuTableDesc" id="menuTable">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Price (₹)</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Available</th>
+                    <th scope="col" style="width: 160px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in menu_items %}
+                <tr data-id="{{ item.id }}">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.category }}</td>
+                    <td>{{ '%.2f'|format(item.price) }}</td>
+                    <td>{{ item.description }}</td>
+                    <td>{{ 'Yes' if item.is_available else 'No' }}</td>
+                    <td style="display: flex;">
+                        <button onclick="showEditMenuItemForm(parseInt('{{ item.id }}'))" aria-label="Edit {{ item.name }}"><span class="material-icons">edit</span></button>
+                        <button onclick="deleteMenuItem(parseInt('{{ item.id }}'))" aria-label="Delete {{ item.name }}"><span class="material-icons">delete</span></button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div id="menuItemFormModal" class="modal"  role="dialog" aria-modal="true" hidden>
+        <div role="document" class="itemsubdiv">
+            <h2 id="formTitle">Add Menu Item</h2>
+            <form id="menuItemForm" onsubmit="return submitMenuItemForm(event)">
+                <input type="hidden" id="itemId" name="itemId" value="" />
+                <label for="nameInput">Name</label>
+                <input type="text" id="nameInput" name="name" required autocomplete="off" />
+                <label for="categoryInput">Category</label>
+                <input type="text" id="categoryInput" name="category" required autocomplete="off" />
+                <label for="priceInput">Price (₹)</label>
+                <input type="number" id="priceInput" name="price" step="0.01" min="0" required />
+                <label for="descriptionInput">Description</label>
+                <textarea id="descriptionInput" name="description" rows="3"></textarea>
+                <label for="availableInput">Available</label>
+                <select id="availableInput" name="is_available">
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
+                <div class="button-div">
+                    <button type="button" onclick="hideMenuItemForm()">Cancel</button>
+                    <button type="submit">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

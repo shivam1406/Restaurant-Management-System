@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<section aria-label="User login form" id="user_login_form">
+    <h1>Login</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+            {% for category, msg in messages %}
+                <li class="{{ category }}">{{ msg }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    <form method="POST" novalidate aria-describedby="loginHelp">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" aria-required="true" placeholder="your@email.com" autocomplete="email" required />
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" aria-required="true" placeholder="Password" autocomplete="current-password" required />
+        <button type="submit">Sign In</button>
+    </form>
+</section>
+{% endblock %}

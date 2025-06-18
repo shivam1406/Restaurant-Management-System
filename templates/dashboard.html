@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<section aria-label="Dashboard overview">
+    <h1>Dashboard</h1>
+    <p style="text-align: center;">Welcome to your restaurant management dashboard, {{ session.get('user', {}).get('name', 'Guest') }} ({{ session.get('user', {}).get('role', 'guest') }}).</p>
+    <div class="dashboard_overview">
+        <a href="{{ url_for('public.public_order_endpoint') }}" style="text-decoration: none; color: inherit;">
+            <div class="dashboard_overview_sub_flex  hoverable">
+                <span class="material-icons" aria-hidden="true">receipt_long</span>
+                <h2>Order Yourself</h2>
+                <p>Place your own order as a guest</p>
+            </div>
+        </a>
+        <a href="{{ url_for('menu.menu_management') }}" style="text-decoration: none; color: inherit;">
+            <div class="dashboard_overview_sub_flex  hoverable">
+                <span class="material-icons" aria-hidden="true">restaurant_menu</span>
+                <h2>Menu Items</h2>
+                <p>Total items in menu: <strong>{{ menu_count }}</strong></p>
+            </div>
+        </a>
+        <a href="{{ url_for('tables.tables_management') }}" style="text-decoration: none; color: inherit;">
+            <div class="dashboard_overview_sub_flex  hoverable">
+                <span class="material-icons" aria-hidden="true">event_seat</span>
+                <h2>Tables</h2>
+                <p>Total tables: <strong>{{ tables_count }}</strong></p>
+            </div>
+        </a>
+        <a href="{{ url_for('orders.orders_management') }}" style="text-decoration: none; color: inherit;">
+            <div class="dashboard_overview_sub_flex  hoverable">
+                <span class="material-icons" aria-hidden="true">receipt_long</span>
+                <h2>Order List</h2>
+                <p>Total orders: <strong>{{ orders_count }}</strong></p>
+            </div>
+        </a>
+    </div>
+</section>
+{% endblock %}

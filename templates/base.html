@@ -1,0 +1,76 @@
+<!-- base.html -->
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Restaurant Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/tables.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/menu.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/orders.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/guestOrder.js') }}" defer></script>
+</head>
+<body>
+    <header role="banner" aria-label="Primary header navigation" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 20px;">
+        
+        <!-- Left: Logo -->
+        <a href="{{ url_for('dashboard.dashboard') }}" style="text-decoration: none; color: inherit;">
+        <div class="brand" tabindex="0" aria-label="Restaurant Management System brand" style="display: flex; align-items: center; gap: 10px;">
+            <span class="material-icons" aria-hidden="true">restaurant_menu</span>
+            <strong style="font-size: 20px;">RMS</strong>
+        </div>
+        </a>
+
+        <!-- Center: Full System Title -->
+        <a href="{{ url_for('dashboard.dashboard') }}" class="site-title" style="flex-grow: 1; text-align: center; text-decoration: none; color: inherit;">
+            <h1 style="margin: 0; font-size: 20px;">Restaurant Management System</h1>
+        </a>
+
+        <!-- Right: Login/Logout + Avatar -->
+        <div style="display: flex; align-items: center; gap: 16px;">
+            {% if session.get('user_id') %}
+            <a href="{{ url_for('auth.logout') }}" class="login-button">
+                <span class="material-icons" style="vertical-align: middle;">logout</span> Logout
+            </a>
+            {% else %}
+            <a href="{{ url_for('auth.login') }}" class="login-button">
+                <span class="material-icons" style="vertical-align: middle;">login</span> Login
+            </a>
+            {% endif %}
+        </div>
+    </header>
+    <aside id="sidebar" class="collapsed" aria-label="Sidebar navigation">
+        <nav role="navigation" aria-label="Sidebar main navigation">
+            <a href="{{ url_for('dashboard.dashboard') }}" class="{{ 'active' if request.path == '/' else '' }}">
+                <span class="material-icons" aria-hidden="true">dashboard</span>Dashboard
+            </a>
+            <a href="{{ url_for('menu.menu_management') }}" class="{{ 'active' if '/menu' in request.path else '' }}">
+                <span class="material-icons" aria-hidden="true">restaurant_menu</span>Menu
+            </a>
+            <a href="{{ url_for('tables.tables_management') }}" class="{{ 'active' if '/tables' in request.path else '' }}">
+                <span class="material-icons" aria-hidden="true">event_seat</span>Tables
+                <span class="notification-badge" aria-label="New tables notifications" role="status">3</span>
+            </a>
+            <a href="{{ url_for('orders.orders_management') }}" class="{{ 'active' if '/orders' in request.path else '' }}">
+                <span class="material-icons" aria-hidden="true">receipt_long</span>Orders
+            </a>
+            <a href="{{ url_for('auth.logout') }}">
+                <span class="material-icons" aria-hidden="true">logout</span>Logout
+            </a>
+        </nav>
+    </aside>
+    <main role="main" id="main-content" tabindex="-1" class="collapsed-sidebar">
+        {% block content %}{% endblock %}
+    </main>
+    <footer role="contentinfo">
+        <div class="status" aria-live="polite">
+            Logged in as {{ session.get('user', {}).get('name', 'Guest') }} ({{ session.get('user', {}).get('role', 'guest') }})
+        </div>
+        <a href="https://github.com/" target="_blank" rel="noopener" aria-label="GitHub repository link">GitHub Repo</a>
+    </footer>
+    <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>

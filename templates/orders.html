@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block content %}
+<section aria-label="Manage restaurant orders">
+    <h1>Orders Management</h1>
+    <div class="add-button">
+        <button type="button" onclick="showAddOrderForm()">Add New Order</button>
+    </div>
+    <div style="overflow-y: auto; padding-right: 10px; flex: 1;">
+        <table role="grid" aria-describedby="ordersTableDesc" id="ordersTable">
+            <thead>
+                <tr>
+                    <th scope="col">Order ID</th>
+                    <th scope="col">Table</th>
+                    <th scope="col">User</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Total (₹)</th>
+                    <th scope="col">Created At</th>
+                    <th scope="col" style="width: 140px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                    <!-- Orders will be dynamically inserted here -->
+                {% else %}
+                <tr>
+                    <td colspan="7">No orders found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div id="orderFormModal" class="modal" role="dialog" aria-modal="true" hidden>
+        <div role="document" class="order-div">
+            <h2 id="orderFormTitle">Add New Order</h2>
+            <div style="overflow-y: auto; padding-right: 10px; flex: 1;">
+                <form id="orderForm" onsubmit="return submitOrderForm(event)">
+                    <select id="tableSelect" name="table_id" required>
+                        <option value="">Select Table</option>
+                        {% for table in tables %}
+                        <option value="{{ table.id }}">{{ table.name }} (Capacity: {{ table.capacity }})</option>
+                        {% endfor %}
+                    </select>
+                    <fieldset>
+                        <legend>Select Menu Items</legend>
+                        <div style="border: 3px solid #9c9c9c; border-radius: 10px; padding: 10px; margin: 10px;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th class="order_table">Select</th>
+                                        <th class="order_table">Item Name</th>
+                                        <th class="order_table">Description</th>
+                                        <th class="order_table">Price (₹)</th>
+                                        <th class="order_table">Quantity</th>
+                                        <th class="order_table">Total (₹)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="menuItemsContainer">
+                                    {% for item in menu_items %}
+                                    <tr class="menu-item">
+                                        <td class="order_table">
+                                            <input type="checkbox" id="menu-item-{{ item.id }}" name="menu_item_ids" value="{{ item.id }}" />
+                                        </td>
+                                        <td class="order_table">
+                                            <label for="menu-item-{{ item.id }}">{{ item.name }}</label>
+                                        </td>
+                                        <td class="order_table">
+                                            <label for="menu-item-{{ item.id }}">{{ item.description }}</label>
+                                        </td>
+                                        <td class="order_table">
+                                            ₹{{ '%.2f'|format(item.price) }}
+                                        </td>
+                                        <td class="order_table">
+                                            <input type="number" id="qty-{{ item.id }}" min="1" value="1" disabled oninput="updateItemTotal(parseInt('{{ item.id }}, {{ item.price }}'))" style="width: 100px;" />
+                                        </td>
+                                        <td class="order_table">
+                                            <span id="total-{{ item.id }}">₹0.00</span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <div style="text-align: end; padding: 10px;">
+                                Grand Total: <span id="grandTotal">₹0.00</span>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="order-form-submit">
+                <button type="button" onclick="hideOrderForm()">Cancel</button>
+                <button type="submit" onclick="submitOrderForm(event)">Place Order</button>
+            </div>
+        </div>
+    </div>
+    <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+    <div id="orderDetailsModal" class="hidden" role="dialog" aria-modal="true">
+        <div role="document" class="orderDetailsDiv">
+            <h3>Order Items</h3>
+            <table id="orderDetailsTable" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th style="border-bottom:1px solid #ccc; padding:8px;">Menu Item</th>
+                        <th style="border-bottom:1px solid #ccc; padding:8px;">Quantity</th>
+                        <th style="border-bottom:1px solid #ccc; padding:8px;">Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Filled dynamically -->
+                </tbody>
+            </table>
+            <div style="text-align:right; margin-top:16px;">
+                <button onclick="hideOrderDetails()">Close</button>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
